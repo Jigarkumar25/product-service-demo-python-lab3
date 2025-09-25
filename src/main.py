@@ -2,16 +2,15 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import os
 
-# Initialize Flask app
 app = Flask(__name__)
 
-# Enable CORS (Cross-Origin Resource Sharing)
-CORS(app, resources={r"/products": {"origins": "*"}})
+# Allow only your frontend domain
+CORS(app, resources={
+    r"/products": {"origins": "https://yellow-ocean-08c724d1e.1.azurestaticapps.net"}
+})
 
-# Get port from environment variable (default: 3030)
-PORT = int(os.environ.get("PORT", 3030))
+PORT = int(os.getenv("PORT", os.getenv("WEBSITES_PORT", 3030)))
 
-# Define route for /products
 @app.route("/products", methods=["GET"])
 def get_products():
     products = [
@@ -21,7 +20,5 @@ def get_products():
     ]
     return jsonify(products)
 
-# Start the Flask server
 if __name__ == "__main__":
-    # host="0.0.0.0" allows external access (important for Azure)
     app.run(host="0.0.0.0", port=PORT)
